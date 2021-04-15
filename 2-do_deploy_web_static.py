@@ -6,27 +6,39 @@ function do_deploy:
 
 from fabric.api import run, env, put
 from os.path import exists
+
+
 env.hosts = ['ubuntu@35.196.67.203', 'ubuntu@35.229.83.138']
 
 
 def do_deploy(archive_path):
-    """Returns False if the file at the
-    path archive_path doesn’t exist
     """
-    if exists(archive_path) is False:
+    Distributes an archive to the web servers
+    """
+    if not os.path.exists(archive_path):
         return False
     try:
-        file_n = archive_path.split("/")[-1]
-        no_ext = file_n.split(".")[0]
-        path = "/data/web_static/releases/"
-        put(archive_path, '/tmp/')
-        run('mkdir -p {}{}/'.format(path, no_ext))
-        run('tar -xzf /tmp/{} -C {}{}/'.format(file_n, path, no_ext))
-        run('rm /tmp/{}'.format(file_n))
-        run('mv {0}{1}/web_static/* {0}{1}/'.format(path, no_ext))
-        run('rm -rf {}{}/web_static'.format(path, no_ext))
-        run('rm -rf /data/web_static/current')
-        run('ln -s {}{}/ /data/web_static/current'.format(path, no_ext))
+        # Get the file_name
+        split_name = archive_path.split('/')
+        file_name = split_name[1]
+
+        # Upload the archive to the /tmp/ directory of the web server
+        put(archive_path, "/tmp/")
+
+        file_path = file_name.split('.')
+        file_path = '/data/web_static/releases/' + file_path[0]
+        run("mkdir -p {}".format(file_path))
+        run("tar -xzf /tmp/{} -C {}".format(file_name, file_path))
+
+        run("rm /tmp/{}".format(file_name))
+
+        file_path_move = file_path + '/web_static'
+        run("mv {}/* {}".format(file_path_move, file_path))
+
+        run("rm -rf {}".format(file_path_move))
+
+        run("rm -rf /data/web_static/current")
+        run("ln -s {} /data/web_static/current".format(file_path))
         return True
     except:
         return False
