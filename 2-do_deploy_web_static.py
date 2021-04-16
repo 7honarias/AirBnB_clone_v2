@@ -1,56 +1,30 @@
 #!/usr/bin/python3
-"""Write a Fabric script (based on the file 1-pack_web_static.py)
-that distributes an archive to your web servers, using the
-function do_deploy:
+"""
+Fabric script based on the file 1-pack_web_static.py that distributes an
+archive to the web servers
 """
 
-from fabric.api import run, env, put
+from fabric.api import put, run, env
 from os.path import exists
-
-
-env.hosts = ['ubuntu@35.196.67.203', 'ubuntu@35.229.83.138']
+env.hosts = ['35.196.67.203', '35.229.83.138']
 
 
 def do_deploy(archive_path):
-    """
-    Distributes an archive to the web servers
-    """
-    # Validate if the archive path does not exist
-    if not os.path.exists(archive_path):
+    """distributes an archive to the web servers"""
+    if exists(archive_path) is False:
         return False
     try:
-        # Get the file_name
-        split_name = archive_path.split('/')
-        file_name = split_name[1]
-
-        # Upload the archive to the /tmp/ directory of the web server
-        put(archive_path, "/tmp/")
-
-        # Uncompress the archive to the folder
-        # /data/web_static/releases/<archive filename without extension>
-        # on the web server
-        file_path = file_name.split('.')
-        file_path = '/data/web_static/releases/' + file_path[0]
-        run("mkdir -p {}".format(file_path))
-        run("tar -xzf /tmp/{} -C {}".format(file_name, file_path))
-
-        # Delete the archive from the web server
-        run("rm /tmp/{}".format(file_name))
-
-        # Move files to the rigth folder
-        file_path_move = file_path + '/web_static'
-        run("mv {}/* {}".format(file_path_move, file_path))
-
-        # Remove path web_static
-        run("rm -rf {}".format(file_path_move))
-
-        # Delete the symbolic link /data/web_static/current from the web server
-        run("rm -rf /data/web_static/current")
-
-        # Create a new the symbolic link /data/web_static/current on
-        # the web server, linked to the new version of your code
-        # (/data/web_static/releases/<archive filename without extension>)
-        run("ln -s {} /data/web_static/current".format(file_path))
+        file_n = archive_path.split("/")[-1]
+        no_ext = file_n.split(".")[0]
+        path = "/data/web_static/releases/"
+        put(archive_path, '/tmp/')
+        run('mkdir -p {}{}/'.format(path, no_ext))
+        run('tar -xzf /tmp/{} -C {}{}/'.format(file_n, path, no_ext))
+        run('rm /tmp/{}'.format(file_n))
+        run('mv {0}{1}/web_static/* {0}{1}/'.format(path, no_ext))
+        run('rm -rf {}{}/web_static'.format(path, no_ext))
+        run('rm -rf /data/web_static/current')
+        run('ln -s {}{}/ /data/web_static/current'.format(path, no_ext))
         return True
     except:
         return False
