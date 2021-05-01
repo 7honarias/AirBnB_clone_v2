@@ -10,10 +10,12 @@ def hello_route():
     """start web app"""
     return 'Hello HBNB!'
 
+
 @app.route('/hbnb', strict_slashes=False)
 def hbnb():
     """route hbnb"""
     return 'HBNB'
+
 
 @app.route('/python', strict_slashes=False)
 @app.route('/python/<text>', strict_slashes=False)
@@ -21,6 +23,7 @@ def pythonFun(text='is cool'):
     """route python"""
     s = text.replace('_', ' ')
     return 'Python {}'.format(s)
+
 
 @app.route('/number/<int:n>', strict_slashes=False)
 def pythonFun(n):
