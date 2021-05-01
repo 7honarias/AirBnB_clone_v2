@@ -26,7 +26,7 @@ def pythonFun(text='is cool'):
 
 
 @app.route('/number/<int:n>', strict_slashes=False)
-def pythonFun(n):
+def numberInt(n):
     """route python"""
     return '%d is a number' % n
 
