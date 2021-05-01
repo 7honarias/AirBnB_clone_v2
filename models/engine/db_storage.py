@@ -78,4 +78,5 @@ class DBStorage:
         self.__session = Session
 
     def close(self):
+        """update info"""
         self.__session.remove()
