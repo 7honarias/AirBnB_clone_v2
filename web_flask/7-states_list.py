@@ -6,25 +6,21 @@ from models import storage
 from models.state import State
 app = Flask(__name__)
 
-dict_state = None
-@app.route('/', strict_slashes=False)
-def index():
-    """start web app"""
-    return "Hello!!!"
-
 
 @app.route('/states_list', strict_slashes=False)
 def hello_route():
     """start web app"""
+    all_state = {}
     dict_state = storage.all(State)
-    return render_template('7-states_list.html', dict_state=dict_state)
+    for key, state in dict_state.items():
+        all_state[state.name] = state
+    return render_template('7-states_list.html', dict_state=all_state)
 
 
 @app.teardown_appcontext
 def teardown_db(exception):
     """close storage"""
-    if dict_state != None:
-        storage.close()
+    storage.close()
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
