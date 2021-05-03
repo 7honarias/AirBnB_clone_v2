@@ -6,13 +6,14 @@
     <BODY>
         <H1>States</H1>
         <UL>
-            {% for key, state in dict_state|dictsort(True) %}
-                <LI>{{ state.id }}: <B>{{ state.name }}</B></LI>
+            {% for state in states|sort(attribute='name') %}
+            <LI>{{ state.id }}: <B>{{ state.name }}</B>
                 <UL>
-                    {% for citie in state.cities|sort(attribute='name') %}
-                        <LI>{{ citie.id }}: <B>{{ citie.name }}</B></LI>
-                    {% endfor %}
+                {% for city in state.cities|sort(attribute='name') %}
+                    <LI>{{ city.id }}: <B>{{ city.name }}</B></LI>
+                {% endfor %}
                 </UL>
+            </LI>
             {% endfor %}
         </UL>
     </BODY>

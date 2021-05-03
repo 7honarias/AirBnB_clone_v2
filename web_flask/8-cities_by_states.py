@@ -10,11 +10,8 @@ app = Flask(__name__)
 @app.route('/cities_by_states', strict_slashes=False)
 def route_cities():
     """start web app"""
-    all_state = {}
-    dict_state = storage.all(State)
-    for key, state in dict_state.items():
-        all_state[state.name] = state
-    return render_template('8-cities_by_states.html', dict_state=all_state)
+    states = storage.all(State).values()
+    return render_template('8-cities_by_states.html', states=states)
 
 
 @app.teardown_appcontext
