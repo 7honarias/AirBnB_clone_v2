@@ -9,20 +9,12 @@ app = Flask(__name__)
 
 @app.route('/states/<id>', strict_slashes=False)
 @app.route('/states', strict_slashes=False)
-def route_states(id=None):
+def route_states(state_id=None):
     """start web app"""
-    all_state = {}
-    dict_state = storage.all(State)
-    
-    if id is None:
-        for key, state in dict_state.items():
-            all_state[state.name] = state
-    else:
-        for key, state in dict_state.items():
-            if state.id == id:
-                all_state[state.name] = state
-    print(len(all_state))
-    return render_template('9-states.html', dict_state=all_state)
+    states = storage.all("State")
+    if state_id is not None:
+        state_id = 'State.' + state_id
+    return render_template('9-states.html', states=states, state_id=state_id)
 
 
 @app.teardown_appcontext

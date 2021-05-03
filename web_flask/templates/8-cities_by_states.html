@@ -9,9 +9,9 @@
             {% for key, state in dict_state|dictsort(True) %}
                 <LI>{{ state.id }}: <B>{{ state.name }}</B></LI>
                 <UL>
-                {% for citie in state.cities|sort(attribute='name') %}
-                    <LI>{{ citie.id }}: <B>{{ citie.name }}</B></LI>
-                {% endfor %}
+                    {% for citie in state.cities|sort(attribute='name') %}
+                        <LI>{{ citie.id }}: <B>{{ citie.name }}</B></LI>
+                    {% endfor %}
                 </UL>
             {% endfor %}
         </UL>
