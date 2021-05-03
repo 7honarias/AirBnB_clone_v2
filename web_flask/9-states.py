@@ -7,11 +7,11 @@ from models.state import State
 app = Flask(__name__)
 
 
-@app.route('/states/<id>', strict_slashes=False)
+@app.route('/states/<state_id>', strict_slashes=False)
 @app.route('/states', strict_slashes=False)
 def route_states(state_id=None):
     """start web app"""
-    states = storage.all("State")
+    states = storage.all(State)
     if state_id is not None:
         state_id = 'State.' + state_id
     return render_template('9-states.html', states=states, state_id=state_id)
